@@ -1,0 +1,91 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewBag.Title = "Thêm khách hàng mới";
+}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4 p-md-5">
+                    <form action="/Customer/Create" method="POST">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="CustomerName" class="form-label fw-bold text-secondary">Tên khách hàng <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="CustomerName" name="CustomerName" placeholder="Nhập tên khách hàng..." required autofocus>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="ContactName" class="form-label fw-bold text-secondary">Tên giao dịch <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="ContactName" name="ContactName" placeholder="Nhập tên giao dịch..." required>
+                            </div>
+                        </div>
+
+                        <div class="row mt-2">
+                            <div class="col-md-6 mb-3">
+                                <label for="Phone" class="form-label fw-bold text-secondary">Số điện thoại</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light text-muted"><i class="bi bi-telephone"></i></span>
+                                    <input type="tel" class="form-control" id="Phone" name="Phone" placeholder="09xx.xxx.xxx">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="Email" class="form-label fw-bold text-secondary">Email</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light text-muted"><i class="bi bi-envelope"></i></span>
+                                    <input type="email" class="form-control" id="Email" name="Email" placeholder="example@gmail.com">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-2">
+                            <div class="col-md-6 mb-3">
+                                <label for="Province" class="form-label fw-bold text-secondary">Tỉnh/Thành</label>
+                                <select class="form-select shadow-none" id="Province" name="Province">
+                                    <option value="">-- Chọn Tỉnh/Thành --</option>
+                                    <option value="Thừa Thiên Huế">Thừa Thiên Huế</option>
+                                    <option value="Hà Nội">Hà Nội</option>
+                                    <option value="TP Hồ Chí Minh">TP Hồ Chí Minh</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="Address" class="form-label fw-bold text-secondary">Địa chỉ</label>
+                                <input type="text" class="form-control" id="Address" name="Address" placeholder="Số nhà, tên đường...">
+                            </div>
+                        </div>
+
+                        <div class="row mt-2">
+                            <div class="col-md-6 mb-3">
+                                <label for="Password" class="form-label fw-bold text-secondary">Mật khẩu truy cập</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light text-muted"><i class="bi bi-shield-lock"></i></span>
+                                    <input type="password" class="form-control" id="Password" name="Password" placeholder="Thiết lập mật khẩu">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="Password" class="form-label fw-bold text-secondary">Mật khẩu truy cập</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light text-muted"><i class="bi bi-shield-lock"></i></span>
+                                    <input type="password" class="form-control" id="Re-Password" name="Re-Password" placeholder="Nhập lại mật khẩu">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-2 pt-3 border-top d-flex justify-content-end gap-2">
+                            <a href="~/Customer" class="btn btn-link text-decoration-none text-secondary px-4">
+                                <i class="bi bi-x-circle me-1"></i> Hủy và quay lại
+                            </a>
+                            <button type="submit" class="btn btn-dark px-5 py-2 shadow-sm rounded-3">
+                                <i class="bi bi-check-all me-1"></i> Lưu khách hàng
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,121 @@
+﻿@model Customer
+@{
+    ViewData["Title"] = "Chỉnh sửa hồ sơ";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-9">
+
+            <form action="/Customer/Edit" method="POST">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="CustomerID" value="@Model.CustomerID" />
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="d-flex align-items-center justify-content-between mb-4 pb-3 border-bottom">
+                    <div>
+                        <h2 class="fw-bold text-dark mb-1">Chỉnh sửa hồ sơ</h2>
+                        <p class="text-muted small mb-0">Cập nhật thông tin cá nhân của bạn</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="/Customer" class="btn btn-light shadow-sm fw-bold px-4" style="border-radius: 10px;">
+                            Hủy
+                        </a>
+                        <button type="submit" class="btn btn-primary shadow-sm fw-bold px-4" style="border-radius: 10px;">
+                            <i class="fa-solid fa-floppy-disk me-2"></i>Lưu thay đổi
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-lg" style="border-radius: 20px;">
+                    <div class="card-body p-4 p-md-5">
+                        <div class="row">
+                            <div class="col-md-3 text-center mb-4 mb-md-0 border-end-md">
+                                <div class="bg-primary-subtle d-inline-flex align-items-center justify-content-center rounded-circle mb-3 shadow-sm" style="width: 100px; height: 100px;">
+                                    <i class="fa-solid fa-user-gear text-primary fs-1"></i>
+                                </div>
+                                <h5 class="fw-bold text-truncate px-2">@Model.CustomerName</h5>
+                                <p class="text-muted small">Đang chỉnh sửa...</p>
+                            </div>
+
+                            <div class="col-md-9 ps-md-5">
+                                <h5 class="fw-bold text-dark mb-4"><i class="fa-solid fa-pen-to-square me-2 text-primary"></i>Thông tin chi tiết</h5>
+
+                                <div class="row g-4">
+                                    <div class="col-sm-6">
+                                        <label class="form-label text-muted small fw-bold">Tên khách hàng</label>
+                                        <input type="text" name="CustomerName" class="form-control custom-input" value="@Model.CustomerName" required>
+                                        <span asp-validation-for="CustomerName" class="text-danger small"></span>
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <label class="form-label text-muted small fw-bold">Tên giao dịch (Contact)</label>
+                                        <input type="text" name="ContactName" class="form-control custom-input" value="@Model.ContactName" required>
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <label class="form-label text-muted small fw-bold">Địa chỉ Email</label>
+                                        <input type="email" name="Email" class="form-control custom-input bg-light" value="@Model.Email" readonly title="Email không thể thay đổi">
+                                        <span asp-validation-for="Email" class="text-danger small"></span>
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <label class="form-label text-muted small fw-bold">Số điện thoại</label>
+                                        <input type="tel" name="Phone" class="form-control custom-input" value="@Model.Phone">
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <label class="form-label text-muted small fw-bold">Tỉnh/Thành phố</label>
+                                        <select asp-for="Province" class="form-select custom-input" asp-items="await SelectListHelper.Provinces()">
+                                            
+                                        </select>
+                                        <span asp-validation-for="Province" class="text-danger small"></span>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <label class="form-label text-muted small fw-bold">Địa chỉ chi tiết</label>
+                                        <input type="text" name="Address" class="form-control custom-input" value="@Model.Address">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .border-bottom {
+            border-color: #f0f0f0 !important;
+        }
+
+        .form-label {
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            font-size: 0.7rem !important;
+        }
+
+        /* Tùy chỉnh input cho đẹp hơn */
+        .custom-input {
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            padding: 0.6rem 0.8rem;
+            transition: all 0.2s;
+        }
+
+            .custom-input:focus {
+                border-color: #0d6efd;
+                box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.1);
+            }
+
+        @@media (min-width: 768px) {
+            .border-end-md {
+                border-right: 1px solid #f0f0f0 !important;
+            }
+        }
+    </style>
+}

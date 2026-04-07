@@ -1,0 +1,257 @@
+@model SV22T1020680.Shop.Models.ProductDetailViewModel
+@{
+    ViewData["Title"] = "Chi tiết sản phẩm - " + Model.Product.ProductName;
+}
+
+<div class="container py-4">
+    <div class="row g-4 lg-g-5">
+        <div class="col-lg-6">
+            <div class="sticky-top" style="top: 20px;">
+                <div class="main-image-container rounded-4 shadow-sm bg-white border p-2 overflow-hidden mb-3">
+                    <img id="mainProductImage" 
+                         src="@(string.IsNullOrEmpty(Model.Product.Photo) ? "/images/products/no-image.png" : "/images/products/" + Model.Product.Photo)" 
+                         class="img-fluid w-100 object-fit-contain zoom-hover" 
+                         style="height: 500px;" alt="@Model.Product.ProductName">
+                </div>
+                
+                @if (Model.Photos.Count > 0)
+                {
+                    <div class="d-flex gap-2 thumbnail-slider pb-2 overflow-auto">
+                        <div class="thumb-wrapper active" onclick="changeImage('@(string.IsNullOrEmpty(Model.Product.Photo) ? "/images/products/no-image.png" : "/images/products/" + Model.Product.Photo)', this)">
+                            <img src="@(string.IsNullOrEmpty(Model.Product.Photo) ? "/images/products/no-image.png" : "/images/products/" + Model.Product.Photo)" alt="main">
+                        </div>
+
+                        @foreach (var photo in Model.Photos.OrderBy(p => p.DisplayOrder))
+                        {
+                            <div class="thumb-wrapper" onclick="changeImage('/images/products/@photo.Photo', this)">
+                                <img src="/images/products/@photo.Photo" alt="@photo.Description">
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="product-info-card p-2">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="badge rounded-pill bg-primary px-3">@Model.CategoryName</span>
+                    <span class="text-muted small">Mã SP: #@Model.Product.ProductID</span>
+                </div>
+                
+                <h1 class="fw-black text-dark mb-3" style="font-size: 2.5rem; letter-spacing: -1px;">@Model.Product.ProductName</h1>
+                
+                <div class="d-flex align-items-baseline gap-2 mb-4">
+                    <span class="display-5 fw-bold text-danger">@Model.Product.Price.ToString("N0")<small class="fs-4">đ</small></span>
+                    <span class="text-muted fs-5">/ @Model.Product.Unit</span>
+                </div>
+
+                <div class="card border-0 bg-light rounded-4 mb-4 shadow-sm">
+                    <div class="card-body p-3">
+                        <div class="row text-center g-0">
+                            <div class="col border-end">
+                                <small class="text-muted d-block">Nhà cung cấp</small>
+                                <span class="fw-bold text-dark">@Model.SupplierName</span>
+                            </div>
+                            <div class="col">
+                                <small class="text-muted d-block">Trạng thái</small>
+                                <span class="fw-bold @(Model.Product.IsSelling ? "text-success" : "text-danger")">
+                                    @(Model.Product.IsSelling ? "Đang kinh doanh" : "Ngừng bán")
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="buy-box p-4 border rounded-4 bg-white shadow-sm mb-4">
+                    <form action="/Cart/AddToCart" method="post" id="add-to-cart-form">
+                        <input type="hidden" name="productId" value="@Model.Product.ProductID" />
+                        <label class="form-label fw-bold small text-uppercase text-muted mb-3">Số lượng mua</label>
+                        <div class="d-flex gap-3">
+                            <div class="quantity-picker d-flex align-items-center border rounded-pill p-1">
+                                <button type="button" class="btn btn-link text-dark p-0 px-3" onclick="changeQty(-1)"><i class="fa-solid fa-minus"></i></button>
+                                <input type="number" id="quantity" name="quantity" class="form-control border-0 text-center fw-bold bg-transparent" value="1" min="1" style="width: 50px;">
+                                <button type="button" class="btn btn-link text-dark p-0 px-3" onclick="changeQty(1)"><i class="fa-solid fa-plus"></i></button>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-lg rounded-pill flex-grow-1 fw-bold shadow-primary @(Model.Product.IsSelling ? "" : "disabled")">
+                                <i class="fa-solid fa-cart-plus me-2"></i> Thêm vào giỏ
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <ul class="nav nav-pills mb-3 gap-2" id="pills-tab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active rounded-pill px-4 fw-bold" data-bs-toggle="pill" data-bs-target="#tab-desc" type="button">Mô tả</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link rounded-pill px-4 fw-bold" data-bs-toggle="pill" data-bs-target="#tab-specs" type="button">Thông số</button>
+                    </li>
+                </ul>
+                <div class="tab-content bg-white p-3 rounded-4 border shadow-sm" id="pills-tabContent">
+                    <div class="tab-pane fade show active" id="tab-desc">
+                        <div class="lh-lg text-secondary">
+                            @(string.IsNullOrEmpty(Model.Product.ProductDescription) ? "Thông tin đang được cập nhật..." : Model.Product.ProductDescription)
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="tab-specs">
+                        <div class="list-group list-group-flush">
+                            @foreach (var attr in Model.Attributes.OrderBy(a => a.DisplayOrder))
+                            {
+                                <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                    <span class="text-muted">@attr.AttributeName</span>
+                                    <span class="fw-bold text-dark">@attr.AttributeValue</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Typography & General */
+    .fw-black {
+        font-weight: 900;
+    }
+
+    .shadow-primary {
+        box-shadow: 0 10px 20px rgba(13, 110, 253, 0.2);
+    }
+
+    /* Gallery */
+    .main-image-container img {
+        transition: transform 0.5s ease;
+    }
+
+    .zoom-hover:hover {
+        transform: scale(1.05);
+    }
+
+    .thumbnail-slider::-webkit-scrollbar {
+        height: 4px;
+    }
+
+    .thumb-wrapper {
+        flex: 0 0 80px;
+        height: 80px;
+        border: 2px solid transparent;
+        border-radius: 12px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        padding: 3px;
+        background: #fff;
+    }
+
+        .thumb-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .thumb-wrapper.active {
+            border-color: #0d6efd;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .thumb-wrapper:hover {
+            border-color: #0d6efd;
+            transform: translateY(-3px);
+        }
+
+    /* Buttons & Inputs */
+    .quantity-picker {
+        background: #f8f9fa;
+    }
+
+        .quantity-picker input::-webkit-outer-spin-button,
+        .quantity-picker input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+    .nav-pills .nav-link {
+        color: #6c757d;
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+    }
+
+        .nav-pills .nav-link.active {
+            background: #0d6efd;
+            border-color: #0d6efd;
+        }
+
+    .breadcrumb {
+        font-size: 0.9rem;
+    }
+
+    .breadcrumb-item + .breadcrumb-item::before {
+        color: #dee2e6;
+    }
+
+    #mainProductImage {
+        transition: opacity 0.3s ease-in-out;
+    }
+</style>
+
+@section Scripts {
+    <script>
+                function changeImage(src, element) {
+            const mainImage = document.getElementById('mainProductImage');
+            if (mainImage) {
+                mainImage.src = src;
+            }
+            if (element) {
+                const allThumbs = document.querySelectorAll('.thumb-wrapper');
+
+                allThumbs.forEach(thumb => {
+                    thumb.classList.remove('active');
+                });
+
+                element.classList.add('active');
+            }
+        }
+
+        function changeQty(delta) {
+            const input = document.getElementById('quantity');
+            let val = parseInt(input.value) + delta;
+            if (val < 1) val = 1;
+            input.value = val;
+        }
+
+        document.getElementById('add-to-cart-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const form = this;
+            const data = new URLSearchParams(new FormData(form));
+
+            fetch(form.action, {
+                method: 'POST',
+                body: data
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    // Update header badge
+                    const badge = document.getElementById('cart-count');
+                    if (badge) {
+                        badge.innerText = data.cartCount;
+                        badge.classList.remove('d-none');
+                    }
+                    
+                    // Simple notification
+                    alert('Đã thêm sản phẩm vào giỏ hàng!');
+                } else {
+                    alert('Lỗi: ' + (data.message || 'Không thể thêm vào giỏ hàng'));
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert('Có lỗi xảy ra khi thêm vào giỏ hàng');
+            });
+        });
+    </script>
+}

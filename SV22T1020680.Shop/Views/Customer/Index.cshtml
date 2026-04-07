@@ -1,0 +1,99 @@
+﻿@model Customer
+@{
+    ViewData["Title"] = "Thông tin cá nhân";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-9">
+
+            <div class="d-flex align-items-center justify-content-between mb-4 pb-3 border-bottom">
+                <div>
+                    <h2 class="fw-bold text-dark mb-1">Hồ sơ cá nhân</h2>
+                    <p class="text-muted small mb-0">Quản lý và bảo mật thông tin tài khoản của bạn</p>
+                </div>
+                <a href="/Customer/Edit" class="btn btn-primary shadow-sm fw-bold px-4" style="border-radius: 10px;">
+                    <i class="fa-solid fa-user-pen me-2"></i>Cập nhật hồ sơ
+                </a>
+            </div>
+
+            <div class="card border-0 shadow-lg" style="border-radius: 20px;">
+                <div class="card-body p-4 p-md-5">
+
+                    <div class="row">
+                        <div class="col-md-3 text-center mb-4 mb-md-0 border-end-md">
+                            <div class="bg-light d-inline-flex align-items-center justify-content-center rounded-circle mb-3 shadow-sm" style="width: 100px; height: 100px;">
+                                <i class="fa-solid fa-address-card text-primary fs-1"></i>
+                            </div>
+                            <h5 class="fw-bold">@Model.CustomerName</h5>
+                            <p class="badge bg-primary-subtle text-primary rounded-pill px-3">Khách hàng</p>
+                        </div>
+
+                        <div class="col-md-9 ps-md-5">
+                            <h5 class="fw-bold text-dark mb-4"><i class="fa-solid fa-circle-info me-2 text-primary"></i>Thông tin chi tiết</h5>
+
+                            <div class="row g-4">
+                                <div class="col-sm-6">
+                                    <label class="form-label text-muted small fw-bold">Tên khách hàng</label>
+                                    <div class="p-2 border-bottom fw-medium">@Model.CustomerName</div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <label class="form-label text-muted small fw-bold">Tên giao dịch (Contact)</label>
+                                    <div class="p-2 border-bottom fw-medium">@Model.ContactName</div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <label class="form-label text-muted small fw-bold">Địa chỉ Email</label>
+                                    <div class="p-2 border-bottom fw-medium">@Model.Email</div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <label class="form-label text-muted small fw-bold">Số điện thoại</label>
+                                    <div class="p-2 border-bottom fw-medium">@Model.Phone</div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <label class="form-label text-muted small fw-bold">Tỉnh/Thành phố</label>
+                                    <div class="p-2 border-bottom fw-medium">@Model.Province</div>
+                                </div>
+
+                                <div class="col-12">
+                                    <label class="form-label text-muted small fw-bold">Địa chỉ chi tiết</label>
+                                    <div class="p-2 border-bottom fw-medium">@Model.Address</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .border-bottom {
+            border-color: #f0f0f0 !important;
+        }
+
+        .form-label {
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            font-size: 0.7rem !important;
+        }
+
+        .fw-medium {
+            color: #2d3436;
+        }
+
+        /* Chỉ thêm border-end trên màn hình từ MD trở lên */
+        @@media (min-width: 768px) {
+            .border-end-md {
+                border-right: 1px solid #f0f0f0 !important;
+            }
+        }
+    </style>
+}

@@ -1,0 +1,38 @@
+@model PagedResult<Shipper>
+@{
+    Layout = null;
+}
+<div class="modal-header text-bg-info">
+    <strong class="modal-title">
+        Chọn người giao hàng
+    </strong>
+    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+</div>
+
+<form action="~/Order/Shipping" method="post">
+    <div class="modal-body">
+        <input type="hidden" name="id" value="@ViewBag.OrderID" />
+        <div class="row">
+            <div class="col-12">
+                <label class="form-label">Người giao hàng</label>
+                <select class="form-select" name="shipperId">
+                    @foreach (var item in Model.DataItems)
+                    {
+                        <option value="@item.ShipperID">@item.ShipperName</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-bicycle"></i> Giao hàng
+        </button>
+        <button type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal">
+            Đóng
+        </button>
+    </div>
+</form>

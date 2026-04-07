@@ -1,0 +1,79 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewBag.Title = "Bổ sung Nhà cung cấp";
+}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-dark text-white py-3">
+                    <h5 class="mb-0 fw-bold"><i class="bi bi-plus-circle me-2"></i>THÊM NHÀ CUNG CẤP MỚI</h5>
+                </div>
+
+                <div class="card-body p-4">
+                    <form action="/Supplier/Create" method="POST">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="SupplierName" class="form-label fw-bold text-secondary">Tên nhà cung cấp <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control shadow-sm" id="SupplierName" name="SupplierName" placeholder="VD: Công ty TNHH Nghĩa" required>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="ContactName" class="form-label fw-bold text-secondary">Tên giao dịch <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control shadow-sm" id="ContactName" name="ContactName" placeholder="VD: Nghĩa Shop" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="Phone" class="form-label fw-bold text-secondary">Số điện thoại</label>
+                                <div class="input-group shadow-sm">
+                                    <span class="input-group-text bg-white"><i class="bi bi-telephone"></i></span>
+                                    <input type="tel" class="form-control border-start-0" id="Phone" name="Phone" placeholder="090...">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="Email" class="form-label fw-bold text-secondary">Email</label>
+                                <div class="input-group shadow-sm">
+                                    <span class="input-group-text bg-white"><i class="bi bi-envelope"></i></span>
+                                    <input type="email" class="form-control border-start-0" id="Email" name="Email" placeholder="example@gmail.com">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="Province" class="form-label fw-bold text-secondary">Tỉnh/Thành</label>
+                                <select class="form-select shadow-sm" id="Province" name="Province">
+                                    <option value="">-- Chọn Tỉnh/Thành --</option>
+                                    <option value="Thừa Thiên Huế">Thừa Thiên Huế</option>
+                                    <option value="Hà Nội">Hà Nội</option>
+                                    <option value="TP Hồ Chí Minh">TP Hồ Chí Minh</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="Address" class="form-label fw-bold text-secondary">Địa chỉ</label>
+                                <input type="text" class="form-control shadow-sm" id="Address" name="Address" placeholder="Số nhà, tên đường...">
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="~/Supplier" class="btn btn-outline-secondary px-4">
+                                <i class="bi bi-x-circle me-1"></i> Hủy bỏ
+                            </a>
+                            <button type="submit" class="btn btn-dark px-4 shadow-sm">
+                                <i class="bi bi-save me-1"></i> Lưu dữ liệu
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

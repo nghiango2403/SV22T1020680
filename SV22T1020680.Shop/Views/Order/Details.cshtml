@@ -1,0 +1,183 @@
+﻿@model SV22T1020680.Models.Sales.OrderViewInfo
+@{
+    ViewData["Title"] = "Chi tiết đơn hàng #" + Model.OrderID;
+    var details = ViewBag.OrderDetails as List<SV22T1020680.Models.Sales.OrderDetailViewInfo>;
+    decimal totalOrder = 0;
+}
+
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0">Chi tiết đơn hàng <span class="text-primary">#@Model.OrderID</span></h2>
+        <div class="d-flex gap-2">
+            <a href="/Order" class="btn btn-outline-secondary rounded-pill">
+                <i class="fa-solid fa-arrow-left me-2"></i>Quay lại
+            </a>
+
+            @if (Model.Status == SV22T1020680.Models.Sales.OrderStatusEnum.New ||
+                        Model.Status == SV22T1020680.Models.Sales.OrderStatusEnum.Accepted)
+            {
+                <form asp-action="Cancel" asp-controller="Order" method="post"
+                      onsubmit="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?')">
+                    <input type="hidden" name="id" value="@Model.OrderID" />
+                    <button type="submit" class="btn btn-danger rounded-pill shadow-sm">
+                        <i class="fa-solid fa-ban me-2"></i>Hủy đơn hàng
+                    </button>
+                </form>
+            }
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+                <h5 class="fw-bold mb-3 border-bottom pb-2 text-primary">Tiến trình xử lý</h5>
+
+                <div class="mb-3">
+                    <label class="text-muted small d-block text-uppercase">Trạng thái hiện tại</label>
+                    <span class="badge bg-primary-subtle text-primary rounded-pill px-3 py-2 mt-1 fw-bold">
+                        @Model.Status.GetDescription()
+                    </span>
+                </div>
+
+                <div class="timeline-info small">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted"><i class="fa-solid fa-plus me-2"></i>Ngày đặt:</span>
+                        <span class="fw-medium">@Model.OrderTime.ToString("dd/MM/yyyy HH:mm:ss")</span>
+                    </div>
+
+                    @if (Model.AcceptTime.HasValue)
+                    {
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted"><i class="fa-solid fa-check-double me-2 text-success"></i>Duyệt lúc:</span>
+                            <span class="fw-medium">@Model.AcceptTime.Value.ToString("dd/MM/yyyy HH:mm:ss")</span>
+                        </div>
+                    }
+
+                    @if (Model.ShippedTime.HasValue)
+                    {
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted"><i class="fa-solid fa-truck me-2 text-info"></i>Xuất kho:</span>
+                            <span class="fw-medium">@Model.ShippedTime.Value.ToString("dd/MM/yyyy HH:mm:ss")</span>
+                        </div>
+                    }
+
+                    @if (Model.FinishedTime.HasValue)
+                    {
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted"><i class="fa-solid fa-flag-checkered me-2 text-danger"></i>Kết thúc:</span>
+                            <span class="fw-medium text-danger fw-bold">@Model.FinishedTime.Value.ToString("dd/MM/yyyy HH:mm:ss")</span>
+                        </div>
+                    }
+                </div>
+
+                @if (!string.IsNullOrEmpty(Model.EmployeeName))
+                {
+                    <hr class="my-3 opacity-25">
+
+                    <div class="employee-box">
+                        <label class="text-muted small d-block mb-1 text-uppercase">Nhân viên phụ trách</label>
+                        <div class="d-flex align-items-center">
+                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 28px; height: 28px; font-size: 12px;">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                            <span class="fw-bold text-dark">@Model.EmployeeName</span>
+                        </div>
+                    </div>
+                }
+                
+                
+            </div>
+
+            <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+                <label class="text-muted small d-block mb-1 text-uppercase fw-bold">Địa chỉ nhận hàng</label>
+                <p class="mb-0 text-dark">
+                    <i class="fa-solid fa-location-dot me-2 text-danger"></i>
+                    @Model.DeliveryAddress, @Model.DeliveryProvince
+                </p>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.ShipperName))
+            {
+                <div class="card border-0 shadow-sm rounded-4 p-4 bg-light border-start border-4 border-primary">
+                    <h5 class="fw-bold mb-3 text-dark small text-uppercase">Đơn vị vận chuyển</h5>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="mb-0 fw-bold">@Model.ShipperName</p>
+                            <p class="mb-0 small text-muted">SĐT: @Model.ShipperPhone</p>
+                        </div>
+                        <i class="fa-solid fa-truck-fast fa-2x text-primary opacity-50"></i>
+                    </div>
+                    @if (Model.ShippedTime.HasValue)
+                    {
+                        <div class="mt-2 pt-2 border-top small text-muted">
+                            Ngày nhận hàng: @Model.ShippedTime.Value.ToString("dd/MM/yyyy HH:mm")
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                <div class="p-4 bg-white border-bottom">
+                    <h5 class="fw-bold mb-0">Danh mục mặt hàng</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0 table-hover">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="ps-4 py-3 text-uppercase small fw-bold">Sản phẩm</th>
+                                <th class="py-3 text-uppercase small fw-bold text-center">SL</th>
+                                <th class="py-3 text-uppercase small fw-bold text-end">Giá bán</th>
+                                <th class="py-3 text-uppercase small fw-bold text-end pe-4">Thành tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (details != null && details.Count > 0)
+                            {
+                                foreach (var item in details)
+                                {
+                                    totalOrder += item.TotalPrice;
+                                    <tr>
+                                        <td class="ps-4">
+                                            <div class="d-flex align-items-center">
+                                                <img src="/images/products/@(string.IsNullOrEmpty(item.Photo) ? "no-image.png" : item.Photo)"
+                                                     class="rounded-3 shadow-sm border" style="width: 55px; height: 55px; object-fit: cover;">
+                                                <div class="ms-3">
+                                                    <div class="fw-bold text-dark">@item.ProductName</div>
+                                                    <span class="badge bg-light text-muted border fw-normal">@item.Unit</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge bg-secondary rounded-pill">@item.Quantity</span>
+                                        </td>
+                                        <td class="text-end text-muted">@item.SalePrice.ToString("N0") <small>đ</small></td>
+                                        <td class="text-end fw-bold text-primary pe-4">@item.TotalPrice.ToString("N0") <small>đ</small></td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="4" class="text-center py-5 text-muted">Đơn hàng này chưa có chi tiết mặt hàng.</td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot class="bg-primary-subtle border-top-0">
+                            <tr>
+                                <td colspan="3" class="ps-4 py-4 fw-bold text-uppercase text-primary">Tổng giá trị đơn hàng</td>
+                                <td class="text-end pe-4 py-4"><h3 class="fw-bold text-danger mb-0">@totalOrder.ToString("N0")đ</h3></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+
+            <div class="alert alert-info mt-4 rounded-4 border-0 shadow-sm" role="alert">
+                <i class="fa-solid fa-circle-info me-2"></i>
+                Mọi thắc mắc về đơn hàng, quý khách vui lòng liên hệ nhân viên <strong>@Model.EmployeeName</strong> để được hỗ trợ nhanh nhất.
+            </div>
+        </div>
+    </div>
+</div>

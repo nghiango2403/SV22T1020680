@@ -1,0 +1,160 @@
+﻿@model IEnumerable<OrderDetailViewInfo>
+@{
+    ViewData["Title"] = "Giỏ hàng của bạn";
+}
+
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold m-0 d-inline-block"><i class="fa-solid fa-cart-shopping me-2"></i>Giỏ hàng</h2>
+            @if (Model.Any())
+            {
+                <a href="/Order/ClearCart" class="text-danger text-decoration-none ms-3 small fw-bold"
+                   onclick="return confirm('Bạn có chắc chắn muốn xóa toàn bộ giỏ hàng không?')">
+                    <i class="fa-solid fa-trash-can me-1"></i>Xóa tất cả
+                </a>
+            }
+        </div>
+        <a href="/Product" class="btn btn-outline-primary rounded-pill px-4"><i class="fa-solid fa-arrow-left me-2"></i>Tiếp tục mua sắm</a>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th class="ps-4 py-3 text-uppercase small fw-bold">Sản phẩm</th>
+                                    <th class="py-3 text-uppercase small fw-bold">Giá</th>
+                                    <th class="py-3 text-uppercase small fw-bold text-center">Số lượng</th>
+                                    <th class="py-3 text-uppercase small fw-bold text-end">Thành tiền</th>
+                                    <th class="py-3 text-center pe-4"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="cart-container">
+                                @await Html.PartialAsync("ShowOrder", Model)
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <form action="/Order/Checkout" method="post" class="col-lg-4" id="frmCheckout">
+                <div class="card border-0 shadow-sm rounded-4 p-4 sticky-top" style="top: 100px;">
+                    <h5 class="fw-bold mb-4">Thông tin thanh toán</h5>
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-muted text-uppercase">Tỉnh/Thành giao hàng</label>
+                        <select name="deliveryProvince" asp-items="await SelectListHelper.Provinces()" class="form-select rounded-pill border-light bg-light px-3" required>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label small fw-bold text-muted text-uppercase">Địa chỉ nhận hàng</label>
+                        <textarea name="deliveryAddress" class="form-control rounded-4 border-light bg-light px-3"
+                              rows="2" placeholder="Số nhà, tên đường, phường/xã..." required></textarea>
+                    </div>
+
+                    <hr class="my-4 opacity-25">
+
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <span class="fw-bold">Tổng tiền thanh toán</span>
+                        <span id="total-cart-price" class="h4 fw-bold text-primary mb-0">
+                            @Model.Sum(x => x.TotalPrice).ToString("N0")đ
+                        </span>
+                    </div>
+
+                    <button type="submit" form="frmCheckout" class="btn btn-primary btn-lg rounded-pill w-100 fw-bold py-3 shadow-primary">
+                        XÁC NHẬN ĐẶT HÀNG
+                    </button>
+                </div>
+            </form>
+        </div>
+    }
+    else
+    {
+        <div class="card border-0 shadow-sm rounded-4 text-center py-5">
+            <div class="py-5">
+                <i class="fa-solid fa-cart-arrow-down fs-1 text-muted opacity-25 mb-4"></i>
+                <h4 class="fw-bold mb-3">Giỏ hàng của bạn đang trống</h4>
+                <p class="text-muted mb-4">Có vẻ như bạn vẫn chưa thêm sản phẩm nào vào giỏ hàng.</p>
+                <a href="/Product" class="btn btn-primary rounded-pill px-5">Mua sắm ngay</a>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        // 1. Hàm xử lý tăng giảm số lượng
+        function stepQty(id, delta) {
+            const input = document.getElementById('qty-' + id);
+            let val = parseInt(input.value) + delta;
+            if (val < 1) val = 1;
+
+            // Không cần gán input.value ở đây vì AJAX sẽ load lại toàn bộ bảng
+            updateCartQty(id, val);
+        }
+
+        // 2. Hàm gọi AJAX cập nhật giỏ hàng
+        function updateCartQty(id, quantity) {
+            $.ajax({
+                url: '/Order/UpdateCartItem',
+                type: 'POST',
+                data: { productId: id, quantity: quantity },
+                success: function (data) {
+                    // Cập nhật lại nội dung bảng hàng hóa
+                    $('#cart-container').html(data);
+
+                    // Lấy tổng tiền mới từ thẻ hidden trong Partial View
+                    const newSum = $('#data-sum-price').val();
+                    $('#total-cart-price').text(newSum);
+                },
+                error: function() {
+                    alert("Lỗi cập nhật giỏ hàng!");
+                }
+            });
+        }
+
+        // 3. Hàm xóa sản phẩm (Cũng cập nhật lại bảng và tổng tiền)
+        function removeFromCart(productId, btn) {
+            if (!confirm('Xóa sản phẩm này?')) return;
+
+            $.ajax({
+                url: '/Order/DeleteCartItem',
+                type: 'GET',
+                data: { productId: productId },
+                success: function (data) {
+                    $('#cart-container').html(data);
+                    const newSum = $('#data-sum-price').val();
+                    $('#total-cart-price').text(newSum);
+
+                    // Nếu giỏ hàng trống thì reload để hiện giao diện "Trống"
+                    if ($('#cart-container tr').length === 0) {
+                        location.reload();
+                    }
+                }
+            });
+        }
+    </script>
+}
+
+@section Styles {
+    <style>
+        .shadow-primary {
+            box-shadow: 0 10px 20px rgba(13, 110, 253, 0.2);
+        }
+
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+    </style>
+}

@@ -1,0 +1,42 @@
+﻿@model IEnumerable<OrderDetailViewInfo>
+@{
+    decimal sumPrice = 0;
+}
+
+@foreach (var item in Model)
+{
+    sumPrice += item.TotalPrice;
+    <tr>
+        <td class="ps-4 py-3">
+            <div class="d-flex align-items-center">
+                <a href="/Product/Detail/@item.ProductID">
+                    <img src="/images/products/@item.Photo" class="rounded-3 border" style="width: 60px; height: 60px; object-fit: cover;">
+                </a>
+                <div class="ms-3">
+                    <h6 class="mb-0 fw-bold">@item.ProductName</h6>
+                </div>
+            </div>
+        </td>
+        <td class="py-3">@item.SalePrice.ToString("N0")đ</td>
+        <td class="py-3 text-center">
+            <div class="d-inline-flex align-items-center border rounded-pill p-1 bg-light">
+                <button type="button" class="btn btn-link btn-sm text-dark p-0 px-2" onclick="stepQty(@item.ProductID, -1)">
+                    <i class="fa-solid fa-minus small"></i>
+                </button>
+                <input type="number" id="qty-@item.ProductID" value="@item.Quantity"
+                       class="form-control form-control-sm border-0 bg-transparent text-center p-0 fw-bold"
+                       style="width: 35px;" readonly>
+                <button type="button" class="btn btn-link btn-sm text-dark p-0 px-2" onclick="stepQty(@item.ProductID, 1)">
+                    <i class="fa-solid fa-plus small"></i>
+                </button>
+            </div>
+        </td>
+        <td class="py-3 text-end fw-bold text-primary">@item.TotalPrice.ToString("N0")đ</td>
+        <td class="py-3 text-center pe-4">
+            <button type="button" class="btn btn-link text-danger p-0" onclick="removeFromCart(@item.ProductID, this)">
+                <i class="fa-solid fa-xmark fs-5"></i>
+            </button>
+        </td>
+    </tr>
+}
+<input type="hidden" id="data-sum-price" value="@sumPrice.ToString("N0")đ" />

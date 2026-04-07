@@ -1,0 +1,260 @@
+@model IEnumerable<OrderDetailViewInfo>
+@{
+    ViewBag.Title = "Chi tiết đơn hàng";
+    int stt = 0;
+}
+
+@section PageToolBar {
+    <div class="btn-group">
+        <button type="button"
+                class="btn btn-primary dropdown-toggle"
+                data-bs-toggle="dropdown">
+            <i class="bi bi-gear me-1"></i>
+            Xử lý đơn hàng
+        </button>
+        <ul class="dropdown-menu">
+            @{
+                var status = (SV22T1020680.Models.Sales.OrderStatusEnum)ViewBag.Order.Status;
+                int orderId = ViewBag.Order.OrderID;
+            }
+
+            @switch (status)
+            {
+                case OrderStatusEnum.New:
+                    <li><a class="dropdown-item open-modal" href="~/Order/Accept/@orderId">Duyệt đơn hàng</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item text-danger open-modal" href="~/Order/Cancel/@orderId">Hủy đơn hàng</a></li>
+                    <li><a class="dropdown-item text-danger open-modal" href="~/Order/Reject/@orderId">Từ chối đơn hàng</a></li>
+                    break;
+
+                case OrderStatusEnum.Accepted:
+                    <li><a class="dropdown-item text-danger open-modal" href="~/Order/Cancel/@orderId">Hủy đơn hàng</a></li>
+                    <li><a class="dropdown-item open-modal" href="~/Order/Shipping/@orderId">Chuyển giao hàng</a></li>
+                    break;
+
+                case OrderStatusEnum.Shipping:
+                    <li><a class="dropdown-item open-modal" href="~/Order/Finish/@orderId">Hoàn tất đơn hàng</a></li>
+                    break;
+
+                default:
+                    <li><span class="dropdown-item-text text-muted small">Không có thao tác khả dụng</span></li>
+                    break;
+            }
+        </ul>
+    </div>
+
+    <a href="~/Order/Delete/@orderId"
+       class="btn btn-danger ms-1 open-modal">
+        <i class="bi bi-trash"></i>
+        Xóa
+    </a>
+
+    <a href="~/Order" class="btn btn-secondary ms-1">
+        <i class="bi bi-arrow-left"></i>
+        Quay lại
+    </a>
+}
+@Html.ValidationMessage("Error", null, new { @class = "text-danger" })
+<!-- TRẠNG THÁI ĐƠN HÀNG -->
+@{
+    String badgeClass = ViewBag.Order.Status switch
+    {
+        OrderStatusEnum.New => "bg-warning text-dark",
+        OrderStatusEnum.Accepted => "bg-info text-dark",
+        OrderStatusEnum.Shipping => "bg-primary text-white",
+        OrderStatusEnum.Completed => "bg-success text-white",
+        OrderStatusEnum.Cancelled => "bg-danger",
+        OrderStatusEnum.Rejected => "bg-dark text-white",
+        _ => "bg-secondary"
+    };
+    String time = ViewBag.Order.Status switch
+    {
+        OrderStatusEnum.New => ViewBag.Order.OrderTime.ToString("dd/MM/yyyy HH:mm"),
+        OrderStatusEnum.Accepted => ViewBag.Order.AcceptTime?.ToString("dd/MM/yyyy HH:mm"),
+        OrderStatusEnum.Shipping => ViewBag.Order.ShippedTime?.ToString("dd/MM/yyyy HH:mm"),
+        OrderStatusEnum.Completed => ViewBag.Order.FinishedTime?.ToString("dd/MM/yyyy HH:mm"),
+        OrderStatusEnum.Cancelled=> ViewBag.Order.FinishedTime?.ToString("dd/MM/yyyy HH:mm"),
+        OrderStatusEnum.Rejected=> ViewBag.Order.FinishedTime?.ToString("dd/MM/yyyy HH:mm"),
+        _ => ""
+    };
+}
+<div class="alert @badgeClass d-flex align-items-center mb-3">
+    <i class="bi bi-check-circle-fill fs-4 me-2"></i>
+    <div>
+        <strong>Trạng thái đơn hàng:</strong>
+       
+        @OrderStatusExtensions.GetDescription(ViewBag.Order.Status) lúc <b>@time</b>
+    </div>
+</div>
+
+<!-- THÔNG TIN ĐƠN HÀNG -->
+<div class="card card-primary card-outline mb-3">
+    <div class="card-header">
+        <h5 class="card-title mb-0">
+            <i class="bi bi-receipt me-2"></i>
+            Thông tin đơn hàng
+        </h5>
+    </div>
+
+    <div class="card-body ps-4 pe-4">
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Mã đơn hàng</div>
+            <div class="col-md-3">@ViewBag.Order.OrderID</div>
+
+            <div class="col-md-3 fw-bold">Ngày lập</div>
+            <div class="col-md-3">@ViewBag.Order.OrderTime.ToString("dd/MM/yyyy HH:mm")</div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3 fw-bold">Nhân viên phụ trách</div>
+            <div class="col-md-3">
+                @(!string.IsNullOrWhiteSpace(ViewBag.Order?.EmployeeName)
+                                ? ViewBag.Order.EmployeeName
+                                : "Chưa có")
+            </div>
+
+            <div class="col-md-3 fw-bold">Ngày nhận đơn</div>
+            <div class="col-md-3">@(ViewBag.Order.AcceptTime?.ToString("dd/MM/yyyy HH:mm") ?? "Chưa duyệt")</div>
+        </div>
+    </div>
+</div>
+
+<!-- THÔNG TIN KHÁCH HÀNG -->
+<div class="card card-info card-outline mb-3">
+    <div class="card-header">
+        <h5 class="card-title mb-0">
+            <i class="bi bi-person me-2"></i>
+            Thông tin khách hàng
+        </h5>
+    </div>
+
+    <div class="card-body ps-4 pe-4">
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Khách hàng</div>
+            <div class="col-md-3">@ViewBag.Order.CustomerName</div>
+
+            <div class="col-md-3 fw-bold">Tên giao dịch</div>
+            <div class="col-md-3">@ViewBag.Order.CustomerContactName</div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Email</div>
+            <div class="col-md-9">@ViewBag.Order.CustomerEmail</div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3 fw-bold">Địa chỉ</div>
+            <div class="col-md-9">@ViewBag.Order.CustomerAddress</div>
+        </div>
+    </div>
+</div>
+
+<!-- THÔNG TIN GIAO HÀNG -->
+<div class="card card-success card-outline mb-3">
+    <div class="card-header">
+        <h5 class="card-title mb-0">
+            <i class="bi bi-truck me-2"></i>
+            Thông tin giao hàng
+        </h5>
+    </div>
+
+    <div class="card-body ps-4 pe-4">
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Người giao hàng</div>
+
+            <div class="col-md-3">
+                @(!string.IsNullOrWhiteSpace(ViewBag.Order?.ShipperName)
+                                ? ViewBag.Order.ShipperName
+                                : "Chưa giao cho shipper")
+            </div>
+
+            <div class="col-md-3 fw-bold">Điện thoại</div>
+            <div class="col-md-3">
+                @(!string.IsNullOrWhiteSpace(ViewBag.Order?.ShipperPhone)
+                                ? ViewBag.Order.ShipperPhone
+                                : "Chưa giao cho shipper")
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Địa chỉ giao hàng</div>
+            <div class="col-md-9">@ViewBag.Order.DeliveryAddress</div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3 fw-bold">Tỉnh / Thành</div>
+            <div class="col-md-9">@ViewBag.Order.DeliveryProvince</div>
+        </div>
+    </div>
+</div>
+
+<!-- DANH SÁCH MẶT HÀNG -->
+<div class="card card-secondary card-outline">
+    <div class="card-header">
+        <h5 class="card-title mb-0">
+            <i class="bi bi-box-seam me-2"></i>
+            Danh sách mặt hàng
+        </h5>
+    </div>
+
+    <div class="card-body table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-secondary text-center">
+                <tr>
+                    <th>STT</th>
+                    <th>Tên hàng</th>
+                    <th>ĐVT</th>
+                    <th>Số lượng</th>
+                    <th>Giá</th>
+                    <th>Thành tiền</th>
+                    @if (ViewBag.Order.Status == OrderStatusEnum.New || ViewBag.Order.Status == OrderStatusEnum.Accepted){
+                        <th style="width:90px"></th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    stt++;
+                    <tr>
+                        <td class="text-center">@stt</td>
+                        <td>@item.ProductName</td>
+                        <td class="text-center">@item.Unit</td>
+                        <td class="text-center">@item.Quantity</td>
+                        <td class="text-end">@item.SalePrice</td>
+                        <td class="text-end">@item.TotalPrice</td>
+                        @if (ViewBag.Order.Status == OrderStatusEnum.New || ViewBag.Order.Status == OrderStatusEnum.Accepted){
+                            <td class="text-end">
+                                <a href="~/Order/EditProductInOrder/@item.OrderID?productId=@item.ProductID" class="btn btn-sm btn-primary open-modal">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="~/Order/DeleteProductInOrder/@item.OrderID?productId=@item.ProductID" class="btn btn-sm btn-danger open-modal">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </td>
+                        }
+                        
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan="5" class="text-end">Tổng cộng</th>
+                    <th class="text-end">@Model.Sum(i => i.TotalPrice).ToString("N0")</th>
+                    @if (ViewBag.Order.Status == OrderStatusEnum.New || ViewBag.Order.Status == OrderStatusEnum.Accepted)
+                    {
+                        <th></th>
+                    }
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .card-body .row {
+            border-bottom: 1px dotted #646464;
+        }
+    </style>
+}

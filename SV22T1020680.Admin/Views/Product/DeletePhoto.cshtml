@@ -1,0 +1,83 @@
+﻿@model ProductPhoto
+@{
+    ViewBag.Title = "Xóa ảnh của mặt hàng";
+}
+
+@section PageToolBar {
+    <button type="submit" form="formDeletePhoto" class="btn btn-danger">
+        <i class="bi bi-trash me-1"></i>
+        Xóa ảnh
+    </button>
+
+    <a href="~/Product/Edit/@Model.ProductID" class="btn btn-secondary ms-1">
+        <i class="bi bi-arrow-left"></i>
+        Quay lại
+    </a>
+}
+
+<div class="row justify-content-center">
+    <div class="col-12">
+        <div class="card card-danger card-outline">
+            <div class="card-header">
+                <h5 class="card-title mb-0 text-danger">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    Xác nhận xóa ảnh
+                </h5>
+            </div>
+
+            <div class="card-body">
+                <form id="formDeletePhoto" method="post" action="~/Product/DeletePhoto/@Model.ProductID?photoId=@Model.PhotoID">
+                    @* Ẩn ID để gửi lên Action xử lý xóa *@
+                    <input type="hidden" asp-for="ProductID" />
+                    <input type="hidden" asp-for="PhotoID" />
+
+                    <div class="alert alert-warning d-flex align-items-center">
+                        <i class="bi bi-info-circle me-2"></i>
+                        Bạn có chắc chắn muốn xóa ảnh này khỏi thư viện của mặt hàng không?
+                    </div>
+
+                    <div class="row mt-4">
+                        @* Cột hiển thị thông tin chi tiết *@
+                        <div class="col-md-7">
+                            <dl class="row">
+                                <dt class="col-sm-4 text-muted">Mô tả ảnh:</dt>
+                                <dd class="col-sm-8 fw-bold">@(string.IsNullOrEmpty(Model.Description) ? "(Không có mô tả)" : Model.Description)</dd>
+
+                                <dt class="col-sm-4 text-muted">Thứ tự hiển thị:</dt>
+                                <dd class="col-sm-8">@Model.DisplayOrder</dd>
+
+                                <dt class="col-sm-4 text-muted">Trạng thái:</dt>
+                                <dd class="col-sm-8">
+                                    @if (Model.IsHidden)
+                                    {
+                                        <span class="badge bg-secondary">Đang ẩn</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success">Đang hiển thị</span>
+                                    }
+                                </dd>
+                            </dl>
+                        </div>
+
+                        @* Cột hiển thị hình ảnh xem trước *@
+                        <div class="col-md-5 text-center">
+                            <div class="p-2 border rounded bg-light">
+                                <img src="~/images/products/@(string.IsNullOrEmpty(Model.Photo) ? "nophoto.png" : Model.Photo)"
+                                     class="img-fluid rounded shadow-sm"
+                                     alt="Ảnh sản phẩm"
+                                     style="max-height: 250px;" />
+                                <div class="mt-2 small text-muted">@Model.Photo</div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="card-footer text-muted small">
+                <i class="bi bi-info-circle me-1"></i>
+                Lưu ý: Hành động này không thể hoàn tác sau khi đã xác nhận xóa.
+            </div>
+        </div>
+    </div>
+</div>

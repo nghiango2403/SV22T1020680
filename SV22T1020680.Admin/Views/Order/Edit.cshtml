@@ -1,0 +1,301 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewBag.Title = "Hiệu chỉnh Đơn hàng";
+}
+<div class="container-fluid py-4">
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <div class="d-flex align-items-center">
+            <a href="/Order/Detail/10245" class="btn btn-light border shadow-sm rounded-circle me-3">
+                <i class="bi bi-arrow-left"></i>
+            </a>
+            <div>
+                <h4 class="fw-bold mb-0 text-primary">Hiệu chỉnh đơn hàng #10245</h4>
+                <small class="text-muted text-uppercase fw-bold">Trạng thái: Đang chờ duyệt</small>
+            </div>
+        </div>
+        <div class="alert alert-info py-2 px-4 mb-0 border-0 shadow-sm rounded-pill">
+            <i class="bi bi-info-circle-fill me-2"></i> Lưu ý: Kiểm tra kỹ tồn kho trước khi tăng số lượng.
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+                    <div class="row g-3">
+                        <div class="col-md-5">
+                            <label class="form-label fw-bold text-secondary small">Khách hàng</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-secondary-subtle"><i class="bi bi-person-fill"></i></span>
+                                <input type="text" class="form-control bg-white shadow-none border-secondary-subtle fw-bold"
+                                       id="selectedCustomer" value="Nguyễn Văn Nghĩa" readonly>
+                                <button class="btn btn-dark px-3" type="button" data-bs-toggle="modal" data-bs-target="#modalSearchCustomer">
+                                    <i class="bi bi-arrow-left-right"></i> Đổi
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold text-secondary small">Đơn vị vận chuyển</label>
+                            <select class="form-select shadow-none border-secondary-subtle" name="ShipperID">
+                                <option value="1" selected>Giao Hàng Tiết Kiệm (GHTK)</option>
+                                <option value="2">Viettel Post</option>
+                                <option value="3">Giao Hàng Nhanh (GHN)</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3 text-end d-flex align-items-end justify-content-end">
+                            <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5 shadow-sm">
+                                <i class="bi bi-save2 me-1"></i> Cập nhật
+                            </button>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold text-secondary small">Tỉnh / Thành</label>
+                            <select class="form-select shadow-none border-primary-subtle" name="DeliveryProvince">
+                                <option value="Thừa Thiên Huế" selected>Thừa Thiên Huế</option>
+                            </select>
+                        </div>
+                        <div class="col-md-8">
+                            <label class="form-label fw-bold text-secondary small">Địa chỉ nhận hàng chi tiết</label>
+                            <input type="text" class="form-control shadow-none border-primary-subtle"
+                                   name="DeliveryAddress" value="123 Hùng Vương, Phường Phú Hội, TP. Huế">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-0">
+                    <h5 class="mb-0 fw-bold">Danh sách hàng hóa</h5>
+                    <button type="button" class="btn btn-success btn-sm rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#modalSelectProduct">
+                        <i class="bi bi-plus-circle me-1"></i> Thêm sản phẩm mới
+                    </button>
+                </div>
+                <div class="card-body p-0 text-center">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light text-uppercase small">
+                                <tr>
+                                    <th class="ps-4" style="width: 80px;">Ảnh</th>
+                                    <th class="text-start">Sản phẩm</th>
+                                    <th style="width: 150px;">Số lượng</th>
+                                    <th class="text-end">Đơn giá</th>
+                                    <th class="text-end pe-4">Thành tiền</th>
+                                    <th style="width: 50px;"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="orderItems">
+                                <tr>
+                                    <td class="ps-4">
+                                        <img src="https://via.placeholder.com/50" class="rounded border shadow-sm" style="width: 50px; height: 50px; object-fit: cover;">
+                                    </td>
+                                    <td class="text-start">
+                                        <div class="fw-bold">Sữa TH True Milk 1L</div>
+                                        <small class="text-muted">ĐVT: Thùng</small>
+                                    </td>
+                                    <td>
+                                        <input type="number" class="form-control form-control-sm text-center shadow-none mx-auto border-primary"
+                                               value="2" min="1" style="width: 80px;">
+                                    </td>
+                                    <td class="text-end">350,000 đ</td>
+                                    <td class="text-end pe-4 fw-bold text-primary">700,000 đ</td>
+                                    <td>
+                                        <button class="btn btn-link text-danger p-0 border-0" title="Xóa">
+                                            <i class="bi bi-trash3-fill"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer bg-light py-4 border-0">
+                    <div class="row justify-content-end text-end pe-4">
+                        <div class="col-md-4">
+                            <span class="text-muted me-2">Tổng tiền hóa đơn:</span>
+                            <span class="h4 fw-bold text-danger">1,625,000 đ</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalSearchCustomer" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title">Tìm kiếm khách hàng</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control shadow-none"
+                           placeholder="Tìm theo ID, Tên, Email, Điện thoại...">
+                    <button class="btn btn-primary px-4"><i class="bi bi-search"></i> Tìm</button>
+                </div>
+                <div class="table-responsive" style="max-height: 350px;">
+                    <table class="table table-sm table-hover border">
+                        <thead class="bg-light sticky-top">
+                            <tr>
+                                <th>ID</th>
+                                <th>Tên khách hàng</th>
+                                <th>Liên hệ</th>
+                                <th>Email/Phone</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td class="fw-bold">Nguyễn Văn Nghĩa</td>
+                                <td>Nghĩa Pro</td>
+                                <td>nghia@gmail.com / 0905...</td>
+                                <td class="text-end">
+                                    <button class="btn btn-sm btn-outline-dark px-3 rounded-pill" data-bs-dismiss="modal">Chọn</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalSelectProduct" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold">Chọn hàng hóa vào đơn</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <input type="text" class="form-control shadow-none" placeholder="Tìm tên hàng hóa...">
+                    </div>
+                    <div class="col-md-4">
+                        <select class="form-select shadow-none">
+                            <option value="">-- Tất cả loại hàng --</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-primary w-100 shadow-sm">
+                            <i class="bi bi-search me-1"></i> Tìm
+                        </button>
+                    </div>
+                </div>
+                <div class="table-responsive" style="max-height: 400px;">
+                    <table class="table table-hover align-middle border">
+                        <thead class="bg-light sticky-top">
+                            <tr>
+                                <th>Ảnh</th>
+                                <th>Tên sản phẩm</th>
+                                <th>ĐVT</th>
+                                <th class="text-end">Giá bán</th>
+                                <th class="text-end pe-3">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><img src="https://via.placeholder.com/40" class="rounded"></td>
+                                <td class="fw-bold">Sữa TH True Milk 1L</td>
+                                <td>Thùng</td>
+                                <td class="text-end fw-bold text-danger">350,000 đ</td>
+                                <td class="text-end pe-3">
+                                    <button class="btn btn-sm btn-primary px-3 rounded-pill">
+                                        <i class="bi bi-cart-plus me-1"></i> Thêm
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><img src="https://via.placeholder.com/40" class="rounded"></td>
+                                <td class="fw-bold">Sữa TH True Milk 1L</td>
+                                <td>Thùng</td>
+                                <td class="text-end fw-bold text-danger">350,000 đ</td>
+                                <td class="text-end pe-3">
+                                    <button class="btn btn-sm btn-primary px-3 rounded-pill">
+                                        <i class="bi bi-cart-plus me-1"></i> Thêm
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><img src="https://via.placeholder.com/40" class="rounded"></td>
+                                <td class="fw-bold">Sữa TH True Milk 1L</td>
+                                <td>Thùng</td>
+                                <td class="text-end fw-bold text-danger">350,000 đ</td>
+                                <td class="text-end pe-3">
+                                    <button class="btn btn-sm btn-primary px-3 rounded-pill">
+                                        <i class="bi bi-cart-plus me-1"></i> Thêm
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><img src="https://via.placeholder.com/40" class="rounded"></td>
+                                <td class="fw-bold">Sữa TH True Milk 1L</td>
+                                <td>Thùng</td>
+                                <td class="text-end fw-bold text-danger">350,000 đ</td>
+                                <td class="text-end pe-3">
+                                    <button class="btn btn-sm btn-primary px-3 rounded-pill">
+                                        <i class="bi bi-cart-plus me-1"></i> Thêm
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><img src="https://via.placeholder.com/40" class="rounded"></td>
+                                <td class="fw-bold">Sữa TH True Milk 1L</td>
+                                <td>Thùng</td>
+                                <td class="text-end fw-bold text-danger">350,000 đ</td>
+                                <td class="text-end pe-3">
+                                    <button class="btn btn-sm btn-primary px-3 rounded-pill">
+                                        <i class="bi bi-cart-plus me-1"></i> Thêm
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><img src="https://via.placeholder.com/40" class="rounded"></td>
+                                <td class="fw-bold">Sữa TH True Milk 1L</td>
+                                <td>Thùng</td>
+                                <td class="text-end fw-bold text-danger">350,000 đ</td>
+                                <td class="text-end pe-3">
+                                    <button class="btn btn-sm btn-primary px-3 rounded-pill">
+                                        <i class="bi bi-cart-plus me-1"></i> Thêm
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><img src="https://via.placeholder.com/40" class="rounded"></td>
+                                <td class="fw-bold">Sữa TH True Milk 1L</td>
+                                <td>Thùng</td>
+                                <td class="text-end fw-bold text-danger">350,000 đ</td>
+                                <td class="text-end pe-3">
+                                    <button class="btn btn-sm btn-primary px-3 rounded-pill">
+                                        <i class="bi bi-cart-plus me-1"></i> Thêm
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><img src="https://via.placeholder.com/40" class="rounded"></td>
+                                <td class="fw-bold">Sữa TH True Milk 1L</td>
+                                <td>Thùng</td>
+                                <td class="text-end fw-bold text-danger">350,000 đ</td>
+                                <td class="text-end pe-3">
+                                    <button class="btn btn-sm btn-primary px-3 rounded-pill">
+                                        <i class="bi bi-cart-plus me-1"></i> Thêm
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

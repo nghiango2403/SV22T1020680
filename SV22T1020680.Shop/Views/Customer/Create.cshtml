@@ -1,0 +1,220 @@
+﻿@model Customer
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Đăng ký tài khoản - LiteCommerce</title>
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/lib/font_awesome/css/all.min.css" rel="stylesheet" />
+    <link href="~/css/site.css" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 20px 15px;
+        }
+
+        .register-card {
+            width: 100%;
+            max-width: 600px; /* Rộng hơn trang login một chút vì có nhiều trường */
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            background: #fff;
+            overflow: hidden;
+        }
+
+        .register-header {
+            padding: 25px 20px 15px 20px;
+            text-align: center;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+            .register-header i {
+                color: #0d6efd;
+            }
+
+            .register-header h4 {
+                color: #0d6efd;
+                font-weight: 700;
+                letter-spacing: -1px;
+                margin-bottom: 0;
+            }
+
+        .card-body-compact {
+            padding: 25px 35px;
+        }
+
+        .form-label-compact {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 3px;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 0.9rem;
+            border: 1px solid #dee2e6;
+            background-color: #fbfcfd;
+        }
+
+            .form-control:focus {
+                box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.08);
+                border-color: #0d6efd;
+                background-color: #fff;
+            }
+
+        .input-group-text {
+            border-radius: 8px;
+            background-color: #fff;
+            color: #adb5bd;
+            border-color: #dee2e6;
+            font-size: 0.9rem;
+        }
+
+        .btn-register {
+            border-radius: 8px;
+            padding: 12px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+            transition: 0.2s;
+            margin-top: 10px;
+        }
+
+            .btn-register:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 4px 10px rgba(13, 110, 253, 0.2);
+            }
+
+        .login-link {
+            text-decoration: none;
+            font-weight: 600;
+            color: #0d6efd;
+        }
+
+        /* Chia cột cho các trường ngắn trên Desktop */
+        @@media (min-width: 576px) {
+            .row-cols-custom > div {
+                flex: 0 0 50%;
+                max-width: 50%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="register-card">
+        <div class="register-header">
+            <div class="d-flex align-items-center justify-content-center gap-2 mb-1">
+                <i class="fa-solid fa-user-plus fs-3"></i>
+                <h4 class="mb-0">TẠO TÀI KHOẢN</h4>
+            </div>
+            <p class="text-muted small">Tham gia cùng LiteCommerce ngay hôm nay!</p>
+        </div>
+
+        <div class="card-body card-body-compact">
+            <form action="/Customer/Create" method="POST">
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger small mb-3 text-center" })
+
+                <div class="row g-3">
+                    <input type="hidden" name="CustomerID" value="0" />
+                    <div class="col-md-6">
+                        <label class="form-label form-label-compact">Tên khách hàng</label>
+                        <input type="text" name="CustomerName" class="form-control" placeholder="Nguyễn Văn A" required>
+                        <span asp-validation-for="CustomerName" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label form-label-compact">Tên giao dịch</label>
+                        <input type="text" name="ContactName" class="form-control" placeholder="Anh A" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label form-label-compact">Số điện thoại</label>
+                        <div class="input-group">
+                            <span class="input-group-text border-end-0"><i class="fa-solid fa-phone"></i></span>
+                            <input type="tel" name="Phone" class="form-control border-start-0" placeholder="0905 xxx xxx">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label form-label-compact">Tỉnh thành</label>
+                        <select name="Province" class="form-control form-select" asp-items="await SelectListHelper.Provinces()">
+                        </select>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label form-label-compact">Địa chỉ chi tiết</label>
+                        <div class="input-group">
+                            <span class="input-group-text border-end-0"><i class="fa-solid fa-location-dot"></i></span>
+                            <input type="text" name="Address" class="form-control border-start-0" placeholder="Số nhà, tên đường, phường/xã...">
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label form-label-compact">Email đăng nhập</label>
+                        <div class="input-group">
+                            <span class="input-group-text border-end-0"><i class="fa-regular fa-envelope"></i></span>
+                            <input type="email" name="Email" class="form-control border-start-0" placeholder="example@gmail.com" required>
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label form-label-compact">Mật khẩu</label>
+                        <input type="password" name="password" id="password" class="form-control" placeholder="••••••••" required>
+                        <span class="text-danger small">@Html.ValidationMessage("password")</span>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label form-label-compact">Xác nhận mật khẩu</label>
+                        <input type="password" name="confirm_password" id="confirm_password" class="form-control" placeholder="••••••••" required>
+                        <span class="text-danger small">
+                            @Html.ValidationMessage("confirm_password")
+                        </span>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 btn-register">
+                    HOÀN TẤT ĐĂNG KÝ
+                </button>
+
+                <div class="text-center mt-4">
+                    <p class="small text-muted mb-0">
+                        Đã có tài khoản?
+                        <a href="/Account/Login" class="login-link">Đăng nhập tại đây</a>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Kiểm tra khớp mật khẩu đơn giản
+        const password = document.getElementById("password");
+        const confirm_password = document.getElementById("confirm_password");
+
+        function validatePassword(){
+          if(password.value != confirm_password.value) {
+            confirm_password.setCustomValidity("Mật khẩu không khớp");
+          } else {
+            confirm_password.setCustomValidity('');
+          }
+        }
+
+        password.onchange = validatePassword;
+        confirm_password.onkeyup = validatePassword;
+    </script>
+</body>
+</html>

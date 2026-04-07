@@ -1,0 +1,53 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewBag.Title = "Thêm người giao hàng mới";
+}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4 p-md-5">
+                    <form action="/Shipper/Create" method="POST">
+
+                        <div class="mb-4">
+                            <label for="ShipperName" class="form-label fw-bold text-secondary">
+                                Tên người giao hàng <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light text-muted">
+                                    <i class="bi bi-truck"></i>
+                                </span>
+                                <input type="text" class="form-control" id="ShipperName" name="ShipperName"
+                                       placeholder="VD: Giao hàng nhanh, J&T Express..." required autofocus>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="Phone" class="form-label fw-bold text-secondary">
+                                Số điện thoại <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light text-muted">
+                                    <i class="bi bi-telephone"></i>
+                                </span>
+                                <input type="tel" class="form-control" id="Phone" name="Phone"
+                                       placeholder="VD: 0234.xxx.xxx" required>
+                            </div>
+                        </div>
+
+                        <div class="mt-5 pt-3 border-top d-flex justify-content-end gap-2">
+                            <a href="/Shipper/Index" class="btn btn-link text-decoration-none text-secondary px-4">
+                                <i class="bi bi-x-circle me-1"></i> Hủy
+                            </a>
+                            <button type="submit" class="btn btn-dark px-5 py-2 shadow-sm rounded-3">
+                                <i class="bi bi-save me-1"></i> Lưu thông tin
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

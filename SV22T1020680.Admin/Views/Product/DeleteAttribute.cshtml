@@ -1,0 +1,86 @@
+﻿@model SV22T1020680.Models.Catalog.ProductAttribute
+@{
+    ViewBag.Title = "Xóa thuộc tính của mặt hàng";
+}
+
+@section PageToolBar {
+    @* Nút xác nhận xóa, trỏ đến form bên dưới *@
+    <button type="submit" form="formDeleteAttribute" class="btn btn-danger">
+        <i class="bi bi-trash me-1"></i>
+        Xác nhận xóa
+    </button>
+
+    @* Quay lại trang chỉnh sửa mặt hàng *@
+    <a href="~/Product/Edit/@Model.ProductID" class="btn btn-secondary ms-1">
+        <i class="bi bi-arrow-left"></i>
+        Quay lại
+    </a>
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-10 col-12">
+        <div class="card card-danger card-outline shadow-sm">
+            <div class="card-header">
+                <h5 class="card-title mb-0 text-danger fw-bold">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    Cảnh báo: Xác nhận xóa thuộc tính
+                </h5>
+            </div>
+
+            <div class="card-body">
+                @* Action xử lý: Truyền ProductID qua URL và AttributeID qua form/query *@
+                <form id="formDeleteAttribute" method="post" action="~/Product/DeleteAttribute/@Model.ProductID?attributeId=@Model.AttributeID">
+                    @* Input ẩn để đảm bảo dữ liệu gửi lên chính xác *@
+                    <input type="hidden" asp-for="ProductID" />
+                    <input type="hidden" asp-for="AttributeID" />
+
+                    <div class="alert alert-warning border-start border-4 border-warning d-flex align-items-center mb-4">
+                        <i class="bi bi-info-circle-fill fs-4 me-3 text-warning"></i>
+                        <div>
+                            Bạn có chắc chắn muốn xóa thuộc tính này không?
+                            Thao tác này sẽ gỡ bỏ thông tin chi tiết khỏi cấu hình của mặt hàng.
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-light rounded border">
+                        <div class="row g-3">
+                            @* Hiển thị Tên thuộc tính *@
+                            <div class="col-sm-6">
+                                <label class="text-muted small text-uppercase fw-bold">Tên thuộc tính</label>
+                                <p class="fs-5 fw-bold text-primary mb-0">@Model.AttributeName</p>
+                            </div>
+
+                            @* Hiển thị Giá trị thuộc tính *@
+                            <div class="col-sm-6">
+                                <label class="text-muted small text-uppercase fw-bold">Giá trị</label>
+                                <p class="fs-5 fw-bold text-dark mb-0">@Model.AttributeValue</p>
+                            </div>
+
+                            <div class="col-12">
+                                <hr class="my-2" />
+                            </div>
+
+                            @* Thứ tự hiển thị *@
+                            <div class="col-sm-6">
+                                <label class="text-muted small text-uppercase fw-bold">Thứ tự ưu tiên</label>
+                                <p class="mb-0">
+                                    <span class="badge bg-secondary px-3">@Model.DisplayOrder</span>
+                                </p>
+                            </div>
+
+                            <div class="col-sm-6 text-sm-end">
+                                <label class="text-muted small text-uppercase fw-bold">Mã hệ thống (ID)</label>
+                                <p class="text-muted mb-0">#@Model.AttributeID</p>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="card-footer bg-white text-muted small py-3">
+                <i class="bi bi-shield-lock me-1"></i>
+                Hệ thống sẽ cập nhật lại danh sách thuộc tính ngay sau khi bạn xác nhận.
+            </div>
+        </div>
+    </div>
+</div>
